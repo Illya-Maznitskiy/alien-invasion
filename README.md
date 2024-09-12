@@ -49,5 +49,5 @@ Alien Invasion is a 2D game developed using the Pygame module. Control a spacesh
 
 ## Acknowledgments
 
-- [Eric Matthes](https://ehmatthes.github.io/about/) for awesome book "Python Crash Course" with developing of this game
+- [Eric Matthes](https://ehmatthes.github.io/about/) for the awesome book Python Crash Course, which includes the development of this game
 - [Pygame](https://www.pygame.org) for the game development library.
