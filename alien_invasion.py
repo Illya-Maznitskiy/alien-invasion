@@ -1,6 +1,7 @@
 import pygame
 import sys
 from time import sleep
+import json
 
 from settings import Settings
 from ship import Ship
@@ -50,7 +51,7 @@ class AlienInvasion:
     def _check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                self._close_game()
 
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
@@ -79,7 +80,7 @@ class AlienInvasion:
             self.ship.moving_left = True
 
         elif event.key == pygame.K_q:
-            sys.exit()
+            self._close_game()
 
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
@@ -93,6 +94,8 @@ class AlienInvasion:
         self.stats.game_active = True
 
         self.sb.prep_score()
+        self.sb.prep_level()
+        self.sb.prep_ships()
 
         self.aliens.empty()
         self.bullets.empty()
@@ -136,11 +139,15 @@ class AlienInvasion:
             for aliens in colissions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
+            self.sb.check_high_score()
         
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+
+            self.stats.level += 1
+            self.sb.prep_level()
 
 
     def _update_aliens(self):
@@ -211,7 +218,8 @@ class AlienInvasion:
     def _ship_hit(self):
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
-
+            self.sb.prep_ships()
+            
             self.aliens.empty()
             self.bullets.empty()
 
@@ -231,6 +239,15 @@ class AlienInvasion:
             if alien.rect.bottom >= screen_rect.bottom:
                 self._ship_hit()
                 break
+
+
+    def _close_game(self):
+        saved_high_score = self.stats.get_saved_high_score()
+        if self.stats.high_score > saved_high_score:
+            with open('high_score.json', 'w') as f:
+                json.dump(self.stats.high_score, f)
+        
+        sys.exit()
 
 
 if __name__ == "__main__":
