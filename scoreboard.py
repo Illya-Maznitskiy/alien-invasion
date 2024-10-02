@@ -65,8 +65,11 @@ class Scoreboard:
 
     def prep_ships(self):
         self.ships = Group()
+        heart_image = pygame.image.load("images/heart.png")
         for ship_number in range(self.stats.ships_left):
-            ship = Ship(self.ai_game)
-            ship.rect.x = 10 + ship_number * ship.rect.width
-            ship.rect.y = 10
-            self.ships.add(ship)
+            heart = pygame.sprite.Sprite()
+            heart.image = heart_image
+            heart.rect = heart_image.get_rect()
+            heart.rect.x = 10 + ship_number * heart.rect.width
+            heart.rect.y = 10
+            self.ships.add(heart)
